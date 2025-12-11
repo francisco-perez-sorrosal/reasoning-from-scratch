@@ -19,7 +19,10 @@ math500_reasoning-cpu.jsonl
 math500_reasoning-cuda.jsonl
 
 # Installation artifacts
-uv.lock
+# uv.lock  # Tracked in fork for reproducible environments
+
+# Claude Code local settings
+.claude/
 
 # Temporary OS files
 .DS_Store

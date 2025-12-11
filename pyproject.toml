@@ -48,6 +48,7 @@ dev = [
     "reasoning-from-scratch",
     "twine>=6.1.0",
     "build>=1.2.2.post1",
+    "nbdime>=4.0.2",
 ]
 
 extra = [

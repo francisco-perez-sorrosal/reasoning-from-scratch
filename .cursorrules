@@ -1,0 +1,152 @@
+# Cursor Rules for reasoning-from-scratch
+
+## Overview
+
+This is a fork of `rasbt/reasoning-from-scratch` for personal experiments and potential upstream contributions. **Always refer to CLAUDE.md for complete workflow documentation.**
+
+## Critical Python Environment Rules
+
+1. **ALWAYS use `uv run` for all Python commands**
+   - `uv run python script.py`
+   - `uv run pytest tests`
+   - `uv run jupyter lab`
+   - Never run Python commands without `uv run` prefix
+
+2. **Python version**: This project uses Python 3.13+ (pinned in `.python-version`)
+
+3. **Dependencies**: Managed via `pyproject.toml` and `uv.lock`
+   - Add packages: `uv add package-name`
+   - Dev packages: `uv add --dev package-name`
+   - Sync environment: `uv sync`
+
+## Git Workflow Rules
+
+### Branch Naming (MANDATORY)
+
+- **Experiment branches**: `exp/<descriptive-name>`
+  - For personal experiments and learning
+  - Can merge from upstream
+  - Keep notebook outputs
+
+- **Contribution branches**: `contrib/<issue-or-feature>`
+  - For upstream PRs only
+  - Always rebase on main before PR
+  - Clear notebook outputs before commit
+
+- **Main branch**: Sync point with upstream only
+  - Never commit directly to main
+  - Only fast-forward merge from upstream
+
+### Syncing with Upstream
+
+```bash
+# Update main
+git checkout main
+git fetch upstream
+git merge upstream/main --ff-only
+git push origin main
+
+# Sync experiment branch
+git checkout exp/my-branch
+git merge upstream/main
+
+# Rebase contribution branch
+git checkout contrib/my-fix
+git rebase main
+```
+
+### Jupyter Notebook Handling
+
+1. **nbdime is configured** for intelligent notebook merging
+   - Conflicts launch a web UI automatically
+   - Manual launch: `uv run nbdime mergetool`
+   - View diffs: `uv run nbdime diff notebook.ipynb`
+
+2. **Before committing to contribution branches**:
+   ```bash
+   uv run jupyter nbconvert --clear-output --inplace path/to/notebook.ipynb
+   ```
+
+3. **Experiment branches**: Keep outputs for reference
+
+4. **When resolving conflicts**:
+   - Use nbdime web UI for visual resolution
+   - After resolving: `git add notebook.ipynb && git rebase --continue`
+
+### Commit Guidelines
+
+1. **DO NOT include Claude authorship** in commit messages (per user's global rules)
+
+2. **Use descriptive commit messages**:
+   - Experiment branches: Descriptive but informal OK
+   - Contribution branches: Clear, professional messages for upstream
+
+3. **Before contribution PR**:
+   - Run tests: `uv run pytest tests`
+   - Clear notebook outputs
+   - Rebase on main
+   - Force push safely: `git push origin branch-name --force-with-lease`
+
+## Code Debugging Rules
+
+1. **When adding print/log statements for debugging**:
+   - Add comment: `# DEBUG: <reason>`
+   - Remove debug statements when done
+   - For TUIs: Check for forgotten print/logs that may interfere with output
+
+2. **Testing**:
+   - Always run tests before commits: `uv run pytest tests`
+   - Run specific test: `uv run pytest tests/test_ch02.py::test_name`
+
+## Environment Management
+
+1. **uv.lock is tracked** in this fork (upstream ignores it)
+   - Provides reproducible environments
+   - When syncing with upstream, resolve conflicts: `uv lock`
+
+2. **Virtual environment**: `.venv` directory (auto-created by uv)
+   - Don't commit .venv (already in .gitignore)
+
+## Project-Specific Notes
+
+1. **This is an educational repository** tied to a published book
+   - Don't make changes that deviate from book content in main chapters
+   - Experiments belong in `exp/*` branches
+
+2. **Chapter structure**:
+   - Main code in Jupyter notebooks (e.g., `ch02/01_main-chapter-code/ch02_main.ipynb`)
+   - Reusable utilities in `reasoning_from_scratch/` package
+   - Tests in `tests/` directory
+
+3. **Hardware considerations**:
+   - Chapters 2-4: Run on CPU/GPU
+   - Chapters 5-6: GPU recommended
+   - Use `--batch_size` to control memory usage
+
+## Quick Reference Commands
+
+```bash
+# Start new experiment
+git checkout -b exp/my-experiment
+
+# Start contribution
+git checkout -b contrib/fix-issue
+
+# Run tests
+uv run pytest tests
+
+# Clear notebook outputs (for contributions)
+uv run jupyter nbconvert --clear-output --inplace notebook.ipynb
+
+# View notebook diff
+uv run nbdime diff notebook.ipynb
+
+# Resolve notebook conflict
+uv run nbdime mergetool
+```
+
+## Additional Resources
+
+- Complete workflow: See CLAUDE.md
+- Book repository: https://github.com/rasbt/reasoning-from-scratch
+- Your fork: https://github.com/francisco-perez-sorrosal/reasoning-from-scratch
